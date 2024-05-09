@@ -3,9 +3,12 @@ import { useStore } from '../../store'
 import Task from '../Task/Task'
 import "./Column.css"
 import PropTypes from "prop-types"
+import classNames from 'classnames'
 const Column = ({ state }) => {
     const [open, setOpen] = useState(false);
     const [text, setText] = useState("");
+    const [drop, setDrop] = useState(false);
+
 
     const tasks = useStore((store) =>
         store.tasks.filter((task) => task.state === state)
@@ -16,13 +19,21 @@ const Column = ({ state }) => {
     const moveTask = useStore((store) => store.moveTask)
 
     const onDropTask = (e=>{
+        setDrop(false);
         e.preventDefault();
         moveTask(draggedTask,state)
     })
 
     return (
-        <div className='column'
-        onDragOver={e=>e.preventDefault()}
+        <div className={classNames('column', { drop: drop })}
+        onDragOver={e=>{
+            setDrop(true);
+            e.preventDefault()
+        }}
+        onDragLeave={(e) => {
+            setDrop(false);
+            e.preventDefault();
+          }}
         onDrop={onDropTask}
         >
             <div className="titleWrapper">

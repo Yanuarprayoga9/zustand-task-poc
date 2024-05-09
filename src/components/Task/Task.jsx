@@ -2,6 +2,7 @@ import { useStore } from "../../store";
 import "./Task.css"
 import PropTypes from "prop-types"
 import trash from "../../assets/trash.svg"
+import classNames from "classnames";
 export default function Task({ title }) {
     const task = useStore((store) =>
         store.tasks.find((task) => task.title === title)
@@ -19,7 +20,7 @@ export default function Task({ title }) {
                 <div>
                     <img src={trash} onClick={() => deleteTask(title)} />
                 </div>
-                {/* <div className={classNames('status', task.state)}>{task.state}</div> */}
+                <div className={classNames('status', task.state)}>{task.state}</div>
             </div>
         </div>
     );
