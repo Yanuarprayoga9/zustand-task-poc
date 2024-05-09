@@ -1,11 +1,12 @@
 import './App.css'
+import Column from './components/Column/Column'
 
 function App() {
 
   return (
-    <>
-    apps
-    </>
+    <div className='App'>
+      <Column />
+    </div>
   )
 }
 
