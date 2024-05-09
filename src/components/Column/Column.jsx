@@ -1,11 +1,74 @@
+import { useState } from 'react'
+import { useStore } from '../../store'
 import Task from '../Task/Task'
 import "./Column.css"
-const Column = () => {
-  return (
-    <div className='column'>
-        <Task title={"test"}/>
-    </div>
-  )
+import PropTypes from "prop-types"
+const Column = ({ state }) => {
+    const [open, setOpen] = useState(false);
+    const [text, setText] = useState("");
+
+    const tasks = useStore((store) =>
+        store.tasks.filter((task) => task.state === state)
+    )
+
+    const addTask = useStore((store) => store.addTask)
+    const draggedTask = useStore((store) => store.draggedTask)
+    const moveTask = useStore((store) => store.moveTask)
+
+    const onDropTask = (e=>{
+        e.preventDefault();
+        moveTask(draggedTask,state)
+    })
+
+    return (
+        <div className='column'
+        onDragOver={e=>e.preventDefault()}
+        onDrop={onDropTask}
+        >
+            <div className="titleWrapper">
+                <p>{state}</p>
+                <button onClick={() => setOpen(true)}>add</button>
+            </div>
+            {/* <Task title={state.title}/> */}
+            {
+                tasks.map((task) => (
+                    <Task title={task.title} key={task.title} />
+                ))
+            }
+
+            {open && (
+                <div className="Modal">
+                    <div className="modalContent">
+                        <input onChange={(e) => setText(e.target.value)} value={text} />
+                        <button
+                            onClick={() => {
+                                if(text == '' ) {
+                                    return alert("tidak boleh kosong"); 
+                                }
+                                addTask(text, state);
+                                setText('');
+                                setOpen(false);
+                            }}
+                        >
+                            Submit
+                        </button>
+                        <button
+                            onClick={() => {
+                                
+                                setOpen(false);
+                            }}
+                        >
+                            cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}
+
+Column.propTypes = {
+    state: PropTypes.string
 }
 
 export default Column

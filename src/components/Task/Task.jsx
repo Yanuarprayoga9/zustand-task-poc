@@ -1,25 +1,30 @@
+import { useStore } from "../../store";
 import "./Task.css"
 import PropTypes from "prop-types"
-
+import trash from "../../assets/trash.svg"
 export default function Task({ title }) {
-    
-    return (
-      <div
-        className="task"
-        draggable
-        
-      >
-        <div>{title}</div>
-        <div className="bottomWrapper">
-          <div>
-            <img src='https://tse2.mm.bing.net/th?id=OIP.gZgBNjtjIRPKngRTawvdxQHaEK&pid=Api&P=0&h=180' />
-          </div>
-          {/* <div className={classNames('status', task.state)}>{task.state}</div> */}
-        </div>
-      </div>
+    const task = useStore((store) =>
+        store.tasks.find((task) => task.title === title)
     );
-  }
+    const setDraggedTask = useStore((store) => store.setDraggedTask);
+    const deleteTask = useStore((store)=>store.deleteTask)
+    return (
+        <div
+            className="task"
+            draggable
+            onDragStart={() => setDraggedTask(task.title)}
+        >
+            <div>{title}</div>
+            <div className="bottomWrapper">
+                <div>
+                    <img src={trash} onClick={() => deleteTask(title)} />
+                </div>
+                {/* <div className={classNames('status', task.state)}>{task.state}</div> */}
+            </div>
+        </div>
+    );
+}
 
-  Task.propTypes = {
+Task.propTypes = {
     title: PropTypes.string
-  }
+}
